@@ -24,7 +24,10 @@ const defaultToneConfig = {
     },
 };
 function pickTone(change, tone) {
-    const bucket = tone[change.level]; // small / moderate / big 중 하나
+    const bucket = tone[change.level];
+    // 방어 로직: 혹시라도 level에 맞는 설정이 없을 경우를 대비
+    if (!bucket)
+        return "";
     if (change.direction === "up")
         return bucket.up;
     if (change.direction === "down")
@@ -32,7 +35,15 @@ function pickTone(change, tone) {
     return bucket.flat;
 }
 function buildChangeMessage(current, previous, options = {}) {
-    const { name, toneConfig = defaultToneConfig } = options;
+    var _a, _b, _c;
+    const { name } = options;
+    // [설정 병합] 사용자가 입력한 설정(options.toneConfig)과 기본 설정(defaultToneConfig)을 합칩니다.
+    // 사용자가 일부만 적었어도 나머지는 기본값이 채워져서 에러가 안 납니다.
+    const toneConfig = {
+        small: { ...defaultToneConfig.small, ...(_a = options.toneConfig) === null || _a === void 0 ? void 0 : _a.small },
+        moderate: { ...defaultToneConfig.moderate, ...(_b = options.toneConfig) === null || _b === void 0 ? void 0 : _b.moderate },
+        big: { ...defaultToneConfig.big, ...(_c = options.toneConfig) === null || _c === void 0 ? void 0 : _c.big },
+    };
     const baseLabel = name ? `${name}, ` : "";
     const currentLabel = `현재가 ${(0, formatPrice_1.formatPrice)(current)}`;
     const change = (0, formatChange_1.analyzeChange)(current, previous);

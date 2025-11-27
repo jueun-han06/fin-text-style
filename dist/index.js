@@ -19,3 +19,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./formatPrice"), exports);
 __exportStar(require("./formatChange"), exports);
 __exportStar(require("./buildMessage"), exports);
+__exportStar(require("./styleRecommendation"), exports);
+__exportStar(require("./a11yMessage"), exports);
