@@ -6,46 +6,71 @@ export type ChangeDirection = "up" | "down" | "flat";
 export type ChangeLevel = "small" | "moderate" | "big";
 
 export type ChangeSummary = {
-  diff: number;          // 가격 차이 (현재 - 이전)
-  diffLabel: string;     // "+2,300원" 같이 표시용 텍스트
-  rate: number;          // 등락률 (퍼센트 숫자)
-  rateLabel: string;     // "+2.7%" 같이 표시용 텍스트
-  direction: ChangeDirection; // up / down / flat
-  level: ChangeLevel;         // small / moderate / big
+  diff: number;
+  diffLabel: string;
+  rate: number;
+  rateLabel: string;
+  direction: ChangeDirection;
+  level: ChangeLevel;
 };
 
-// 기본 임계값(기준선)
-// 0~1% : small
-// 1~3% : moderate
-// 3% 이상 : big
-const SMALL_THRESHOLD = 1;
-const BIG_THRESHOLD = 3;
+// 사용자가 설정을 바꿀 수 있도록 옵션(Options)을 추가했습니다.
+export type ChangeOptions = {
+  thresholds?: {
+    small: number;    // 예: 1% 미만은 소폭(small)
+    big: number;      // 예: 3% 이상은 급등(big)
+  };
+  currencySymbol?: string; // 기본 "원" 말고 다른 화폐 단위 지원
+};
 
-export function analyzeChange(current: number, previous: number): ChangeSummary {
-  // 이전 가격이 0이면 등락률을 계산할 수 없으므로 "변화 없음"으로 처리
+// 기본 설정값 (사용자가 아무것도 안 넣었을 때 씀)
+const DEFAULT_OPTIONS = {
+  thresholds: { small: 1, big: 3 },
+  currencySymbol: "원",
+};
+
+/**
+ * 소수점 계산 오류(부동소수점 문제)를 방지하기 위한 안전한 반올림 함수
+ * 예: 0.1 + 0.2 = 0.3000000004 같은 문제를 막아줍니다.
+ */
+function safeRate(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+export function analyzeChange(
+  current: number,
+  previous: number,
+  options: ChangeOptions = {}
+): ChangeSummary {
+  // 사용자가 준 옵션과 기본값을 합침
+  const config = { ...DEFAULT_OPTIONS, ...options };
+  const { small, big } = config.thresholds || DEFAULT_OPTIONS.thresholds;
+  const symbol = config.currencySymbol || "원";
+
+  // 방어 로직: 이전 가격이 0원이면 나눗셈을 할 수 없으므로 0으로 처리
   if (previous === 0) {
     return {
       diff: 0,
-      diffLabel: "0원",
+      diffLabel: `0${symbol}`,
       rate: 0,
-      rateLabel: "0%",
+      rateLabel: "0.00%",
       direction: "flat",
       level: "small",
     };
   }
 
-  const diff = current - previous; // 가격 차이
-  const rate = (diff / previous) * 100; // 퍼센트 등락률
+  const diff = current - previous;
+  const rawRate = (diff / previous) * 100;
+  const rate = safeRate(rawRate); // 안전하게 반올림 적용
 
-  const direction: ChangeDirection =
-    diff > 0 ? "up" : diff < 0 ? "down" : "flat";
-
+  const direction: ChangeDirection = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
   const absRate = Math.abs(rate);
 
+  // 변동 폭(Level) 계산: 사용자가 설정한 기준(small, big)을 따름
   let level: ChangeLevel;
-  if (absRate < SMALL_THRESHOLD) {
+  if (absRate < small) {
     level = "small";
-  } else if (absRate < BIG_THRESHOLD) {
+  } else if (absRate < big) {
     level = "moderate";
   } else {
     level = "big";
@@ -54,7 +79,8 @@ export function analyzeChange(current: number, previous: number): ChangeSummary 
   const diffSign = diff > 0 ? "+" : diff < 0 ? "-" : "";
   const rateSign = rate > 0 ? "+" : rate < 0 ? "-" : "";
 
-  const diffLabel = `${diffSign}${Math.abs(diff).toLocaleString("ko-KR")}원`;
+  // 1,000 단위 콤마 찍기 + 설정된 화폐 단위 붙이기
+  const diffLabel = `${diffSign}${Math.abs(diff).toLocaleString("ko-KR")}${symbol}`;
   const rateLabel = `${rateSign}${absRate.toFixed(2)}%`;
 
   return {
