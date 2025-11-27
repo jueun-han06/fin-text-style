@@ -1,6 +1,25 @@
 import { formatPrice } from "./formatPrice";
+import { analyzeChange } from "./formatChange";
+import { buildChangeMessage } from "./buildMessage";
+import { recommendStyle } from "./styleRecommendation";
+import { buildA11yChangeLabel } from "./a11yMessage";
 
-console.log(formatPrice(1234567));
-console.log(formatPrice(89000));
-console.log(formatPrice(1200.5));
-console.log(formatPrice(-5000));
+const current = 88300;
+const previous = 86000;
+
+console.log("가격:", formatPrice(current));
+
+const summary = analyzeChange(current, previous);
+console.log("요약:", summary);
+
+console.log(
+  "일반 사용자용 메시지:",
+  buildChangeMessage(current, previous, { name: "삼성전자" }),
+);
+
+console.log("스타일 추천:", recommendStyle(summary));
+
+console.log(
+  "A11Y 라벨:",
+  buildA11yChangeLabel(current, previous, { name: "삼성전자" }),
+);
