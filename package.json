@@ -1,0 +1,20 @@
+{
+  "name": "fin-text-style",
+  "version": "1.0.0",
+  "description": "Korean finance-friendly text formatting utilities (price & change formatting).",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/demo.ts"
+  },
+  "keywords": [
+    "finance",
+    "korean",
+    "price",
+    "format",
+    "typescript"
+  ],
+  "author": "hanjueun <hanjueun6267@naver.com>",
+  "license": "ISC"
+}
