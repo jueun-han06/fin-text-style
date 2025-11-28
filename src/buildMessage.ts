@@ -1,7 +1,4 @@
 // buildMessage.ts
-// 종목 이름, 현재가, 이전가를 받아서
-// "삼성전자, 전일 대비 2.7% 상승(소폭 상승입니다)" 같은 문장을 만들어 주는 함수
-
 import { formatPrice } from "./formatPrice";
 import { analyzeChange, ChangeSummary } from "./formatChange";
 
@@ -35,20 +32,17 @@ const defaultToneConfig: ToneConfig = {
   },
 };
 
-// [핵심 기술] 사용자가 설정의 일부만 넘겨도 되도록 만드는 고급 타입
-// 예를 들어 'big'일 때의 문구만 바꾸고 싶으면, small이나 moderate는 안 적어도 되게 해줍니다.
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
-export type BuildMessageOptions = {
+export type MessageOptions = {
   name?: string;
-  toneConfig?: DeepPartial<ToneConfig>; // 일부만 수정 가능하게 설정
+  toneConfig?: DeepPartial<ToneConfig>;
 };
 
 function pickTone(change: ChangeSummary, tone: ToneConfig): string {
   const bucket = tone[change.level];
-  // 방어 로직: 혹시라도 level에 맞는 설정이 없을 경우를 대비
   if (!bucket) return "";
 
   if (change.direction === "up") return bucket.up;
@@ -59,12 +53,10 @@ function pickTone(change: ChangeSummary, tone: ToneConfig): string {
 export function buildChangeMessage(
   current: number,
   previous: number,
-  options: BuildMessageOptions = {},
+  options: MessageOptions = {},
 ): string {
   const { name } = options;
 
-  // [설정 병합] 사용자가 입력한 설정(options.toneConfig)과 기본 설정(defaultToneConfig)을 합칩니다.
-  // 사용자가 일부만 적었어도 나머지는 기본값이 채워져서 에러가 안 납니다.
   const toneConfig: ToneConfig = {
     small: { ...defaultToneConfig.small, ...options.toneConfig?.small },
     moderate: { ...defaultToneConfig.moderate, ...options.toneConfig?.moderate },
