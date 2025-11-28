@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - main
-
-# 🔥🔥🔥 여기가 핵심! 꼭 추가해야 함 🔥🔥🔥
+      
 permissions:
   contents: write
   pull-requests: write
@@ -39,5 +38,5 @@ jobs:
           commit: "chore: version packages"
           title: "chore: version packages"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+         GITHUB_TOKEN: ${{ secrets.PERSONAL_GH_TOKEN }}
+         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
