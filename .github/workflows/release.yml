@@ -5,6 +5,7 @@ on:
     branches:
       - main
 
+# 🔥🔥🔥 여기가 핵심! 꼭 추가해야 함 🔥🔥🔥
 permissions:
   contents: write
   pull-requests: write
