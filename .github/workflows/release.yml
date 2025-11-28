@@ -9,10 +9,8 @@ permissions:
   contents: write
   pull-requests: write
 
-concurrency: ${{ github.workflow }}-${{ github.ref }}
-
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,9 +33,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: npm run release
-          commit: "chore: version packages"
-          title: "chore: version packages"
+          publish: npm run release   # ← 중요: with 아래!
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # ← 들여쓰기 중요!
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
