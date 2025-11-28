@@ -1,73 +1,56 @@
-// styleRecommendation.ts
-// 등락 정보(ChangeSummary)를 받아서
-// UI에서 사용할 색상 토큰 / 아이콘 / 강조 여부를 추천해주는 모듈
+// src/styleRecommendation.ts
+// 등락 정보(direction, level)를 기반으로
+// UI에서 사용할 색상, 아이콘, 강조 여부를 추천해주는 모듈
 
-import { ChangeSummary } from "./formatChange";
+import type { ChangeDirection, ChangeLevel } from "./formatChange";
 
-export type SemanticColor = "positive" | "negative" | "neutral";
-
-export type ColorToken =
-  | "priceUpSoft"
-  | "priceUpStrong"
-  | "priceDownSoft"
-  | "priceDownStrong"
-  | "priceNeutral";
-
-export type IconToken = "arrowUp" | "arrowDown" | "minus";
+export type StyleRecommendationInput = {
+  direction: ChangeDirection;
+  level: ChangeLevel;
+};
 
 export type StyleRecommendation = {
-  semanticColor: SemanticColor; // 의미론적 색상 (양/음/중립)
-  colorToken: ColorToken;       // 디자인 시스템에서 바로 쓸 수 있는 토큰 이름
-  icon: IconToken;              // 사용할 아이콘 종류
-  emphasize: boolean;           // 급등/급락 등 강조 표시 여부
+  semanticColor: "positive" | "negative" | "neutral";
+  colorToken: string;
+  icon: "arrowUp" | "arrowDown" | "minus";
+  emphasize: boolean;
 };
 
 /**
- * 등락 요약 정보를 기반으로 UI 스타일을 추천합니다.
- * - direction: 상승 / 하락 / 보합
- * - level: small / moderate / big 에 따라 강도 조절
+ * 등락 방향/강도에 따라 UI 스타일 정보를 추천해 주는 함수
+ * - semanticColor: 토스나 증권 UI에서 쓰는 의미 기반 컬러 토큰
+ * - colorToken: 디자인 시스템에서 쓸 수 있는 좀 더 구체적인 토큰 이름
+ * - icon: 상승/하락/보합 아이콘
+ * - emphasize: 급등/급락처럼 강조가 필요한지 여부
  */
-export function recommendStyle(change: ChangeSummary): StyleRecommendation {
-  let semanticColor: SemanticColor;
-  let colorToken: ColorToken;
-  let icon: IconToken;
-  let emphasize = false;
+export function getStyleRecommendation(
+  input: StyleRecommendationInput
+): StyleRecommendation {
+  const { direction, level } = input;
 
-  if (change.direction === "up") {
-    semanticColor = "positive";
-    icon = "arrowUp";
-
-    if (change.level === "big") {
-      colorToken = "priceUpStrong";
-      emphasize = true;
-    } else if (change.level === "moderate") {
-      colorToken = "priceUpStrong";
-    } else {
-      colorToken = "priceUpSoft";
-    }
-  } else if (change.direction === "down") {
-    semanticColor = "negative";
-    icon = "arrowDown";
-
-    if (change.level === "big") {
-      colorToken = "priceDownStrong";
-      emphasize = true;
-    } else if (change.level === "moderate") {
-      colorToken = "priceDownStrong";
-    } else {
-      colorToken = "priceDownSoft";
-    }
-  } else {
-    // 보합 또는 변동 거의 없음
-    semanticColor = "neutral";
-    colorToken = "priceNeutral";
-    icon = "minus";
+  if (direction === "up") {
+    return {
+      semanticColor: "positive",
+      colorToken: level === "big" ? "priceUpStrong" : "priceUp",
+      icon: "arrowUp",
+      emphasize: level === "big",
+    };
   }
 
+  if (direction === "down") {
+    return {
+      semanticColor: "negative",
+      colorToken: level === "big" ? "priceDownStrong" : "priceDown",
+      icon: "arrowDown",
+      emphasize: level === "big",
+    };
+  }
+
+  // direction === "flat"
   return {
-    semanticColor,
-    colorToken,
-    icon,
-    emphasize,
+    semanticColor: "neutral",
+    colorToken: "priceNeutral",
+    icon: "minus",
+    emphasize: false,
   };
 }
