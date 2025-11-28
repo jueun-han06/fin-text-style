@@ -145,6 +145,11 @@ TypeScript → dist/ 폴더로 컴파일 및 타입 선언 생성.
 
 ---
 
+### npm 패키지  
+[![npm version](https://img.shields.io/npm/v/fin-text-style.svg)](https://www.npmjs.com/package/fin-text-style)
+
+---
+
 ## License
 
 ISC
