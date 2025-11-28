@@ -1,6 +1,6 @@
 {
   "name": "fin-text-style",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Korean finance-friendly text formatting utilities with A11y & Design tokens.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
