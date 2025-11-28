@@ -1,7 +1,13 @@
 # fin-text-style
 
+🔥 금융 가격/등락률 텍스트 스타일링 유틸리티
+
 한국 금융 서비스 UI를 위한 가격 포맷팅 및 변동 문구 생성 유틸리티입니다.  
 토스와 같은 핀테크 환경에서 반복적으로 등장하는 텍스트 처리 로직을 표준화하여 개발 효율성과 유지보수성을 높입니다.
+
+🚀 Demo: https://jueun-han06.github.io/fin-text-style/
+
+npm 패키지: https://www.npmjs.com/package/fin-text-style
 
 ---
 
