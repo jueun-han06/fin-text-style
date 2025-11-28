@@ -1,5 +1,11 @@
 # fin-text-style
 
+## 1.0.2
+
+### Patch Changes
+
+- cdc8ac1: dkssudgktpdy
+
 ## 1.0.1
 
 ### Patch Changes
