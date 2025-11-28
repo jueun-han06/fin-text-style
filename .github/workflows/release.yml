@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      
+
 permissions:
   contents: write
   pull-requests: write
@@ -14,6 +14,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -30,7 +31,7 @@ jobs:
       - name: Build Library
         run: npm run build
 
-      - name: Create Release Pull Request or Publish to npm
+      - name: Create Release PR or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
@@ -38,5 +39,5 @@ jobs:
           commit: "chore: version packages"
           title: "chore: version packages"
         env:
-         GITHUB_TOKEN: ${{ secrets.PERSONAL_GH_TOKEN }}
-         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
