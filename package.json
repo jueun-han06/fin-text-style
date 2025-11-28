@@ -13,7 +13,8 @@
     "test:watch": "jest --watch",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "format": "prettier --write 'src/**/*.{ts,tsx}'",
-    "prepublishOnly": "npm run test && npm run build"
+    "prepublishOnly": "npm run test && npm run build",
+    "prepare": "husky"
   },
   "keywords": [
     "finance",
@@ -32,13 +33,18 @@
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.0.0",
+    "husky": "^9.1.7",
     "jest": "^29.5.0",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.0.0",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.0.0"
   },
-  "dependencies": {
-    "fin-text-style": "^1.0.0"
+  "dependencies": {}, 
+  "lint-staged": {
+    "**/*.{ts,tsx}": [
+      "npm test -- --bail --findRelatedTests --passWithNoTests"
+    ]
   }
 }
