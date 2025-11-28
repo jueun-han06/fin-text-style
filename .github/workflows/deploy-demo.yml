@@ -1,4 +1,4 @@
-nname: Deploy demo to GitHub Pages
+name: Deploy demo to GitHub Pages
 
 on:
   push:
@@ -31,7 +31,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: example-ui
-        run: npm ci
+        run: npm install
 
       - name: Build demo app
         working-directory: example-ui
@@ -53,4 +53,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        
