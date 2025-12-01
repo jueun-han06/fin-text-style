@@ -158,4 +158,4 @@ TypeScript → dist/ 폴더로 컴파일 및 타입 선언 생성.
 
 ## License
 
-ISC
+MIT
